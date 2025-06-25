@@ -25,7 +25,11 @@ function readExampleFile(context?: vscode.ExtensionContext) {
 }
 
 function getFileContent() {
-	return readExampleFile();
+    const activeEditor = vscode.window.activeTextEditor;
+    if (activeEditor) {
+        return activeEditor.document.getText();
+    }
+    return "";
 }
 
 function getVariable() {
