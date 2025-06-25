@@ -25,7 +25,9 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "dev": "NODE_NO_WARNINGS=1 npm run watch",
+    "start": "NODE_NO_WARNINGS=1 code --extensionDevelopmentPath=."
   },
   "devDependencies": {
     "@types/vscode": "^1.101.0",
