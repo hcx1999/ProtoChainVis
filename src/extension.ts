@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as vm from 'vm';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -31,12 +32,11 @@ function getVariable() {
 	return `Student`;
 }
 
-function getProtoChain() {
+function getProtoChain(context?: vscode.ExtensionContext) {
 	const file = getFileContent();
 	const varible = getVariable();
 	const funName = "protoFun";
 	const suffix = `
-try{
 function ${funName}(obj) {
 
     if (obj == null) return JSON.stringify({ ownProperties: {}, prototypeProperties: {} });
@@ -137,23 +137,29 @@ function ${funName}(obj) {
     
     return JSON.stringify(result, null, 2);
 }
-} catch(e) {
-	console.log("Err");
-}
-	`
-    const executeCode = new Function(`
+	`;
+    console.log("TEST");
+    const code = `
         ${file}
         ${suffix}
-        return ${funName}(${varible});
-    `);
-    
+        ${funName}(${varible});
+    `;
+	
     try {
-        const result = executeCode();
-        console.log("RESULT: ", result);
+        // 创建新的执行上下文
+        const context = vm.createContext({
+            console: console,
+            JSON: JSON,
+            Object: Object,
+            // 添加需要的全局对象
+        });
+        
+        const result = vm.runInContext(code, context);
+    
         return result;
     } catch (e) {
         console.error("执行错误:", e);
-        return "Run Failure";
+        return "执行失败";
     }
 }
 
