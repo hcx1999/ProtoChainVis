@@ -1,21 +1,12 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
 function readExampleFile(context?: vscode.ExtensionContext) {
+    console.log("TEST");
     try {
         let filePath: string;
-        
-        if (context) {
-            // 使用扩展上下文获取文件路径
-            filePath = path.join(context.extensionPath, 'src', 'example.js');
-        } else {
-            // 备用方案：使用相对路径
-            filePath = path.join(__dirname, 'example.js');
-        }
-        
+        filePath = path.join(__dirname + "/out", 'example.js');
         return fs.readFileSync(filePath, 'utf8');
     } catch (error) {
         console.error('读取文件失败:', error);
@@ -24,18 +15,18 @@ function readExampleFile(context?: vscode.ExtensionContext) {
 }
 
 function getFileContent() {
-	return readExampleFile();
+    return readExampleFile();
 }
 
 function getVariable() {
-	return `Student`;
+    return `Student`;
 }
 
 function getProtoChain() {
-	const file = getFileContent();
-	const varible = getVariable();
-	const funName = "protoFun";
-	const suffix = `
+    const file = getFileContent();
+    const varible = getVariable();
+    const funName = "protoFun";
+    const suffix = `
 try{
 function ${funName}(obj) {
 
@@ -138,9 +129,9 @@ function ${funName}(obj) {
     return JSON.stringify(result, null, 2);
 }
 } catch(e) {
-	console.log("Err");
-}
-	`
+    console.log("Err");
+}`;
+
     const executeCode = new Function(`
         ${file}
         ${suffix}
@@ -157,26 +148,4 @@ function ${funName}(obj) {
     }
 }
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "protochainvis" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('protochainvis.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		// vscode.window.showInformationMessage('Hello World from ProtoChainVis!');
-		vscode.window.showInformationMessage(getProtoChain());
-	});
-
-	context.subscriptions.push(disposable);
-}
-
-// This method is called when your extension is deactivated
-export function deactivate() {}
+console.log("TEST: ", getProtoChain());
